@@ -6,7 +6,7 @@ const employeeController = require('../controllers/employee.controller');
 router.post('/register', employeeController.register);
 //* When an user send request to "/login" endpoint, employeeController.login is used to handle its request-response
 router.post('/login', employeeController.login);
-router.get('/info', employeeController.getInfo);
+router.get('/info/:id', employeeController.getInfo);
 router.put('/update/:id', employeeController.updateEmployee);
 
 module.exports = router;

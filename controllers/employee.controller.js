@@ -1,7 +1,6 @@
 // Handle requests from user && send response to user
 const employeeService = require('../services/employee.service');
 const bcrypt = require('bcrypt');
-// const helperFunction = require('');
 
 exports.register = async(req, res, next) => {
     try {
@@ -71,25 +70,18 @@ exports.login = async(req, res, next) => {
 
 exports.updateEmployee = async(req, res, next) => {
     try {
-        console.log("run le run le ma?");
         const employee = req.body;
-        console.log(employee);
 
         const _id = req.params.id;
 
-        console.log(_id);
-
         const salt = await bcrypt.genSalt(10);
 
-        employee.password = await bcrypt.hash(employee.password, salt);
+        if (employee.password) employee.password = await bcrypt.hash(employee.password, salt);
 
         // Convert Base64encoding to Buffer to be stored
-        if (employee.profile != null) {
-            employee.profile = Buffer.from(employee.profile, 'base64');
-        }
+        if (employee.profile) employee.profile = Buffer.from(employee.profile, 'base64');
 
         const result = await employeeService.updateEmployeeInfo(_id, employee);
-        console.log(result);
 
         if (result) {
             res.status(200).json({
@@ -113,16 +105,15 @@ exports.updateEmployee = async(req, res, next) => {
 
 exports.getInfo = async(req, res, next) => {
     try {
-        const email = req.query.email;
-        const employee = await employeeService.checkUser(email);
+        const _id = req.params.id;
+
+        const employee = await employeeService.getEmployeeInfo(_id);
 
         res.status(200).json({
             status: true,
-            email: email,
             name: employee.name,
             phone: employee.phone,
             profile: employee.profile,
-            firstLogin: employee.firstLogin
         })
     } catch (error) {
         res.status(500).json({

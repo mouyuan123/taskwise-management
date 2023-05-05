@@ -29,13 +29,15 @@ class EmployeeService {
         return jwt.sign(tokenData, secretKey, { expiresIn: jwt_expire });
     }
 
-    // static async getEmployeeInfo(employee) {
-    //     try{
-    //         return await EmployeeModel.findById(userId);
-    //     }catch(error){
-    //         throw error;
-    //     }
-    // }
+    static async getEmployeeInfo(_id) {
+        try {
+            const employee = await EmployeeModel.findById(_id);
+
+            return employee;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     static async updateEmployeeInfo(_id, employee) {
         try {
@@ -43,15 +45,24 @@ class EmployeeService {
                 _id: _id
             }
             const update = {
-                    $set: {
-                        name: employee.name,
-                        password: employee.password,
-                        phone: employee.phone,
-                        profile: employee.profile,
-                        firstLogin: false,
-                    }
+                $set: {
+                    firstLogin: false,
                 }
-                // Check whether the "update" is done / not
+            }
+            if (employee.name != null && employee.name != "") {
+                update['$set']['name'] = employee.name;
+            }
+            if (employee.password != null && employee.password != "") {
+                update['$set']['password'] = employee.password;
+            }
+            if (employee.phone != null && employee.phone != "") {
+                update['$set']['phone'] = employee.phone;
+            }
+            if (employee.profile != null && employee.profile != "") {
+                update['$set']['profile'] = employee.profile;
+            }
+
+            // Check whether the "update" is done / not (Avoid updating if the field is empty)
             const result = (await EmployeeModel.updateOne(filter, update)).acknowledged;
             return result;
         } catch (error) {

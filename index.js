@@ -5,6 +5,7 @@ const app = require('./app');
 const mongodb = require('./config/db');
 //* Import "employeeCollection" object from 'employee.model.js'
 const employeeCollection = require('./models/Employee.model');
+const projectCollection = require('./models/Project.model');
 
 const port = 3000;
 
